@@ -11,6 +11,7 @@ router.post('/sessions', sessionController.create)
 //Ong routes
 router.post('/ongs', ongController.create)
 router.get('/ongs', ongController.index)
+router.delete('/ongs', ongController.delete)
 
 //Incident routes
 router.post('/incidents', incidentController.create)

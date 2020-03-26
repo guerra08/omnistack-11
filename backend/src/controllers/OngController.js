@@ -24,5 +24,13 @@ module.exports = {
         const orgs = await con('ongs').select('*')
 
         return res.json(orgs)
+    },
+
+    async delete(req,res){
+        const { id } = req.body
+
+        const op = await con('ongs').where('id', '=', id).del()
+
+        return res.json(op)
     }
 }
