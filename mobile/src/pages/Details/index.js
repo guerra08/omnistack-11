@@ -1,52 +1,55 @@
 import React from 'react'
 import { View, Image, TouchableOpacity, Text, Linking } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import * as MailComposer from 'expo-mail-composer'
 
 import styles from './styles'
 import logoImg from '../../assets/logo.png'
 
-export default function Details(){
+export default function Details() {
 
     const nav = useNavigation()
-    const msg = 'Olá APAD, estou entrando em contato pois gostaria de ajudar no caso "Cachorro machucado" com o valor de 120,00'
+    const route = useRoute()
+    const incident = route.params.incident
+    const value = Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(incident.value)
+    const msg = `Olá ${incident.name}, estou entrando em contato pois gostaria de ajudar no caso "${incident.title}" com o valor de ${value}`
 
-    function navigateBack(){
+    function navigateBack() {
         nav.goBack()
     }
 
-    function sendMail(){
+    function sendMail() {
         MailComposer.composeAsync({
-            subject: 'Herói do caso: Cachorro machcado',
-            recipients: ['g.g.bruno.00@gmail.com'],
+            subject: `Herói do caso: ${incident.title}`,
+            recipients: [incident.email],
             body: msg
         })
     }
 
-    function sendWhatsapp(){
-        Linking.openURL(`whatsapp://send?phone=54991124596&text=${msg}`)
+    function sendWhatsapp() {
+        Linking.openURL(`whatsapp://send?phone=${incident.whatsapp}&text=${msg}`)
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image source={logoImg}></Image>
-                
-                <TouchableOpacity onPress={    navigateBack}>
+
+                <TouchableOpacity onPress={navigateBack}>
                     <Feather name="arrow-left" size={28} color="#E82041"></Feather>
                 </TouchableOpacity>
-            </View> 
+            </View>
 
             <View style={styles.incident}>
-                <Text style={[styles.incidentProperty, {marginTop: 0}]}>ONG:</Text>
-                <Text style={styles.incidentValue}>APAD</Text>
+                <Text style={[styles.incidentProperty, { marginTop: 0 }]}>ONG:</Text>
+                <Text style={styles.incidentValue}>{incident.name}</Text>
 
                 <Text style={styles.incidentProperty}>CASO:</Text>
-                <Text style={styles.incidentValue}>Cão machucado</Text>
+                <Text style={styles.incidentValue}>{incident.description}</Text>
 
                 <Text style={styles.incidentProperty}>VALOR:</Text>
-                <Text style={styles.incidentValue}>120,00</Text>
+                <Text style={styles.incidentValue}>{value}</Text>
             </View>
 
             <View style={styles.contactBox}>
